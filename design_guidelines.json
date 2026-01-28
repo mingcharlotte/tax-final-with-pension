@@ -1,0 +1,143 @@
+{
+  "identity": {
+    "name": "E1",
+    "role": "Anti-AI Designer",
+    "mission": "Create a professional, high-trust UK Tax Calculator that feels like a Swiss financial instrument, not a generic form.",
+    "principles": [
+      "Fusion over Imitation: Mix Swiss Print Design (grids, typography) with Fintech Utility (density, clarity).",
+      "Transparency First: The 'How this was calculated' section is the hero, not the result.",
+      "Content is King: Every number must have a label and a context.",
+      "Zoom In: Use bold focus on the 'Take Home Pay' metric.",
+      "Negative Space: Use whitespace to separate the 'Input' from the 'Output' to reduce cognitive load."
+    ]
+  },
+  "design_system": {
+    "typography": {
+      "headings": {
+        "family": "Manrope, sans-serif",
+        "weights": ["600", "700", "800"],
+        "usage": "All section titles, modal headers, and the main 'Take Home Pay' display.",
+        "letterSpacing": "tracking-tight"
+      },
+      "body": {
+        "family": "Inter, sans-serif",
+        "weights": ["400", "500"],
+        "usage": "Labels, input text, explanatory paragraphs, and table data.",
+        "letterSpacing": "tracking-normal"
+      },
+      "mono": {
+        "family": "JetBrains Mono, monospace",
+        "weights": ["400", "500"],
+        "usage": "All currency values in the breakdown table and calculation logic steps."
+      }
+    },
+    "colors": {
+      "palette": {
+        "primary": {
+          "name": "Royal Navy",
+          "hex": "#0F172A",
+          "usage": "Sidebar background, primary buttons, active states."
+        },
+        "secondary": {
+          "name": "Slate Grey",
+          "hex": "#64748B",
+          "usage": "Subtitles, inactive icons, borders."
+        },
+        "background": {
+          "light": "#F8FAFC",
+          "paper": "#FFFFFF",
+          "dark": "#020617"
+        },
+        "accent": {
+          "success": "#10B981",
+          "warning": "#F59E0B",
+          "info": "#3B82F6"
+        }
+      },
+      "theme_strategy": "Professional Light Mode with Deep Navy Accents. Dark Mode uses 'Obsidian' strategy (Deep Blue/Black backgrounds).",
+      "gradients": "No full-screen gradients. Use subtle 'mesh' gradients only in the 'Voluntary NI' or 'Pro Tips' cards."
+    },
+    "spacing": {
+      "scale": "Tailwind Default",
+      "strategy": "Generous. Use p-6 or p-8 for cards. Gap-6 for grids.",
+      "container_padding": "px-4 md:px-8 lg:px-12"
+    },
+    "layout": {
+      "grid_system": "Bento Grid Mode B (High Density)",
+      "columns": "grid-cols-1 lg:grid-cols-12",
+      "gap": "gap-6",
+      "areas": {
+        "inputs": "col-span-12 lg:col-span-4",
+        "results": "col-span-12 lg:col-span-8",
+        "breakdown": "col-span-12"
+      }
+    },
+    "components": {
+      "inputs": {
+        "style": "Shadcn Input with 'Financial' customization. Add currency prefix (£) as a fixed element inside the input wrapper.",
+        "border": "border-slate-200 focus:border-navy-600 focus:ring-navy-600"
+      },
+      "cards": {
+        "style": "Flat, 1px border (border-slate-200), no shadow by default. Hover: shadow-md.",
+        "radius": "rounded-xl"
+      },
+      "buttons": {
+        "primary": "bg-slate-900 text-white hover:bg-slate-800 rounded-lg h-12 px-6 font-medium",
+        "secondary": "bg-white border border-slate-200 text-slate-900 hover:bg-slate-50 rounded-lg h-12 px-6"
+      },
+      "tables": {
+        "style": "Clean rows, no vertical borders. Header: uppercase, text-xs, text-slate-500, tracking-wider. Rows: hover:bg-slate-50."
+      }
+    },
+    "visual_enhancers": {
+      "surface": "Grid Borders: Use subtle borders between grid items to create a 'ledger' feel.",
+      "texture": "Noise overlay (opacity 0.02) on the Navy sidebar to prevent banding.",
+      "icons": "Lucide React (Stroke width 1.5px for elegance)."
+    }
+  },
+  "implementation_plan": {
+    "phases": [
+      {
+        "name": "Phase 1: Layout Shell",
+        "tasks": [
+          "Create the Bento Grid layout (Sidebar/Input vs Main Content).",
+          "Implement the 'Navy' sidebar/header."
+        ]
+      },
+      {
+        "name": "Phase 2: Input Engine",
+        "tasks": [
+          "Build the 'IncomeInput' component with currency formatting.",
+          "Create the 'EmploymentType' toggle (Segmented Control style)."
+        ]
+      },
+      {
+        "name": "Phase 3: Calculation Core",
+        "tasks": [
+          "Implement the 2026/27 Tax Logic (PA, Dividends, NI).",
+          "Create the 'TaxBreakdown' utility function."
+        ]
+      },
+      {
+        "name": "Phase 4: Visualization",
+        "tasks": [
+          "Build the 'Detailed Tax Statement' table.",
+          "Create the 'How this was calculated' accordion section."
+        ]
+      }
+    ],
+    "universal_guidelines": [
+      "Do not use 'Inter' for headings. Use 'Manrope'.",
+      "Do not use generic gradients. Use solid, high-contrast colors.",
+      "Ensure all inputs have 'data-testid' attributes.",
+      "Use 'sonner' for any toast notifications (e.g., 'Copied to clipboard').",
+      "Mobile First: Stack columns on mobile, expand to 12-col grid on desktop."
+    ]
+  },
+  "assets": {
+    "fonts": {
+      "google_fonts_import": "https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+    },
+    "icons": "lucide-react"
+  }
+}
