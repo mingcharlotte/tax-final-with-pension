@@ -591,12 +591,16 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
   deductionParts.push(`Income Tax: £${incomeTax.totalTax.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
   deductionParts.push(`National Insurance: £${result.nationalInsurance.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
   
+  if (pensionContribution > 0) {
+    deductionParts.push(`Pension Contribution: £${pensionContribution.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+  }
+  
   if (result.voluntaryNICost > 0) {
     deductionParts.push(`Voluntary Class 2 NI: £${result.voluntaryNICost.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
   }
   
-  if (pensionContribution > 0 && incomeTax.pensionTaxRelief > 0) {
-    deductionParts.push(`Pension Tax Relief: -£${incomeTax.pensionTaxRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+  if (result.taxReliefAffectingTakeHome > 0) {
+    deductionParts.push(`Higher/Additional Rate Relief: -£${result.taxReliefAffectingTakeHome.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
   }
   
   const deductionCalc = deductionParts.join(' + ');
@@ -610,7 +614,7 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
   // Step 10: Take Home Pay
   steps.push({
     title: 'Annual Take-Home Pay',
-    description: 'Total Income - Total Deductions',
+    description: `Total Income (£${result.totalIncome.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}) - Total Deductions - This is your actual spending money.`,
     value: `£${result.takeHome.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
   });
   
