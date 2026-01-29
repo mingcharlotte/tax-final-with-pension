@@ -518,14 +518,22 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 py-6 px-4 md:px-8 mt-12 no-print">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-sm">
-            UK Tax Calculator 2026/27 • All calculations based on current HMRC guidelines
-          </p>
-          <p className="text-xs mt-2 text-slate-500">
-            For informational purposes only. Please consult with a qualified tax advisor.
-          </p>
+      <footer className="bg-slate-900 text-slate-400 py-8 px-4 md:px-8 mt-12 no-print">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center space-y-4">
+            <p className="text-sm">
+              UK Tax Calculator 2025/26 • Calculations based on current HMRC guidelines
+            </p>
+            <div className="border-t border-slate-700 pt-4">
+              <p className="text-xs text-slate-500 max-w-3xl mx-auto leading-relaxed">
+                <strong className="text-slate-400">Disclaimer:</strong> This calculator is provided for informational and educational purposes only. 
+                While every effort has been made to ensure accuracy, tax calculations can be complex and individual circumstances vary. 
+                This tool does not constitute financial, tax, or legal advice. The creator accepts no liability for any loss or damage arising from 
+                the use of this calculator or reliance on its results. For personalized tax advice, please consult a qualified tax advisor or accountant. 
+                Tax rates and allowances are subject to change by HMRC.
+              </p>
+            </div>
+          </div>
         </div>
       </footer>
     </div>
