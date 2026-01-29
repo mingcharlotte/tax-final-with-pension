@@ -492,12 +492,13 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
   }
   
   // Step 7: National Insurance
-  const salaryForNI = (pensionContribution > 0 && pensionType === 'Net Pay') ? salary - pensionContribution : salary;
+  // CRITICAL: NI is always on FULL gross salary, even with Net Pay pensions
+  const salaryForNI = salary;
   let niRules = '';
   let niCalculation = '';
   
   if (employmentType === 'Employee') {
-    niRules = 'Rules: Employee NI - 8% on earnings between £12,570-£50,270, then 2% above £50,270. ';
+    niRules = 'Rules: Employee NI - 8% on earnings between £12,570-£50,270, then 2% above £50,270. IMPORTANT: Calculated on FULL gross salary (pension does NOT reduce NI). ';
     if (salaryForNI > NI_LOWER_LIMIT) {
       const band1 = Math.min(salaryForNI - NI_LOWER_LIMIT, NI_UPPER_LIMIT - NI_LOWER_LIMIT);
       const band2 = Math.max(0, salaryForNI - NI_UPPER_LIMIT);
