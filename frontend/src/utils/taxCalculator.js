@@ -550,28 +550,30 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
     value: `£${result.nationalInsurance.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
   });
   
-  // Step 7b: Pension Tax Relief (if applicable)
-  if (pensionContribution > 0 && incomeTax.pensionTaxRelief > 0) {
+  // Step 7b: Pension Contribution & Tax Relief (if applicable)
+  if (pensionContribution > 0) {
     let pensionDescription = '';
     
     if (pensionType === 'Net Pay') {
-      pensionDescription = `Rules: Net Pay Arrangement - pension deducted before tax, saving tax at your marginal rate. Calculation: Tax saved by reducing £${pensionContribution.toLocaleString()} from taxable income = £${incomeTax.pensionTaxRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      pensionDescription = `Rules: Net Pay Arrangement - pension deducted before tax & NI. Tax relief automatic through lower taxable income. Calculation: £${pensionContribution.toLocaleString()} deducted from gross salary before tax calculation. Tax saved = £${incomeTax.pensionTaxRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (already included in lower tax/NI above).`;
     } else {
       const grossedUp = pensionContribution / 0.8;
       const basicRelief = grossedUp * 0.20;
-      const extraRelief = incomeTax.pensionTaxRelief - basicRelief;
+      const higherAdditionalRelief = result.taxReliefAffectingTakeHome || 0;
       
-      pensionDescription = `Rules: Relief at Source - 20% basic relief claimed automatically, higher/additional rate relief added. Calculation: Contribution £${pensionContribution.toLocaleString()} grossed up to £${grossedUp.toLocaleString('en-GB', { maximumFractionDigits: 2 })}. Basic relief (20%): £${basicRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      pensionDescription = `Rules: Relief at Source - You pay £${pensionContribution.toLocaleString()}, government adds 20% (£${basicRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}) directly to pension pot. Total in pot: £${grossedUp.toLocaleString('en-GB', { maximumFractionDigits: 2 })}. `;
       
-      if (extraRelief > 0) {
-        pensionDescription += ` + Extra relief: £${extraRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      if (higherAdditionalRelief > 0) {
+        pensionDescription += `As a higher/additional rate taxpayer, you get extra relief: £${higherAdditionalRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} (reduces your tax bill).`;
+      } else {
+        pensionDescription += `Basic rate taxpayer: all relief (20%) goes to pension pot, none reduces your tax bill.`;
       }
     }
     
     steps.push({
-      title: 'Pension Tax Relief',
+      title: 'Pension Contribution',
       description: pensionDescription,
-      value: `£${incomeTax.pensionTaxRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      value: `£${pensionContribution.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} paid`,
     });
   }
   
