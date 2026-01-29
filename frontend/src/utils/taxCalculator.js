@@ -100,11 +100,54 @@ export const calculateIncomeTax = (salary, savings, dividends, pensionContributi
   // Calculate tax on Salary (non-savings income)
   let salaryTax = 0;
   if (taxableSalary > 0) {
-    const basicRateAmount = Math.min(taxableSalary, BASIC_RATE_LIMIT - PERSONAL_ALLOWANCE);
-    const higherRateAmount = Math.min(Math.max(0, taxableSalary - (BASIC_RATE_LIMIT - PERSONAL_ALLOWANCE)), HIGHER_RATE_LIMIT - BASIC_RATE_LIMIT);
+    const adjustedBasicLimit = basicRateLimit - PERSONAL_ALLOWANCE;
+    const basicRateAmount = Math.min(taxableSalary, adjustedBasicLimit);
+    const higherRateAmount = Math.min(Math.max(0, taxableSalary - adjustedBasicLimit), HIGHER_RATE_LIMIT - basicRateLimit);
     const additionalRateAmount = Math.max(0, taxableSalary - (HIGHER_RATE_LIMIT - PERSONAL_ALLOWANCE));
     
     salaryTax = (basicRateAmount * 0.20) + (higherRateAmount * 0.40) + (additionalRateAmount * 0.45);
+  }
+  
+  // Calculate pension tax relief
+  if (pensionContribution > 0) {
+    if (pensionType === 'Net Pay') {
+      // Tax relief = tax saved by reducing taxable income
+      // Calculate what tax would have been without pension
+      let taxWithoutPension = 0;
+      const adjustedBasicLimit = basicRateLimit - PERSONAL_ALLOWANCE;
+      const fullTaxableSalary = salary - personalAllowance;
+      
+      if (fullTaxableSalary > 0) {
+        const basicAmount = Math.min(fullTaxableSalary, adjustedBasicLimit);
+        const higherAmount = Math.min(Math.max(0, fullTaxableSalary - adjustedBasicLimit), HIGHER_RATE_LIMIT - basicRateLimit);
+        const additionalAmount = Math.max(0, fullTaxableSalary - (HIGHER_RATE_LIMIT - PERSONAL_ALLOWANCE));
+        taxWithoutPension = (basicAmount * 0.20) + (higherAmount * 0.40) + (additionalAmount * 0.45);
+      }
+      
+      pensionTaxRelief = taxWithoutPension - salaryTax;
+    } else if (pensionType === 'Relief at Source') {
+      // Basic relief (20%) already claimed, higher/additional rate relief calculated here
+      const grossedUpContribution = pensionContribution / 0.8;
+      const basicRelief = grossedUpContribution * 0.20;
+      
+      // Check if user is higher/additional rate taxpayer
+      const salaryAboveBasic = Math.max(0, taxableSalary - (BASIC_RATE_LIMIT - PERSONAL_ALLOWANCE));
+      if (salaryAboveBasic > 0) {
+        const salaryAboveHigher = Math.max(0, taxableSalary - (HIGHER_RATE_LIMIT - PERSONAL_ALLOWANCE));
+        if (salaryAboveHigher > 0) {
+          // Additional rate taxpayer: extra 25% relief (45% - 20%)
+          const additionalRelief = Math.min(grossedUpContribution, salaryAboveHigher) * 0.25;
+          pensionTaxRelief = basicRelief + additionalRelief;
+        } else {
+          // Higher rate taxpayer: extra 20% relief (40% - 20%)
+          const higherRelief = Math.min(grossedUpContribution, salaryAboveBasic) * 0.20;
+          pensionTaxRelief = basicRelief + higherRelief;
+        }
+      } else {
+        // Basic rate taxpayer: only 20% relief
+        pensionTaxRelief = basicRelief;
+      }
+    }
   }
   
   // Calculate tax on Savings
