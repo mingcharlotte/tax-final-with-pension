@@ -64,10 +64,10 @@ export const calculateIncomeTax = (salary, savings, dividends, pensionContributi
   
   // Apply PA to Salary first
   if (adjustedSalary > remainingPA) {
-    taxableSalary = salary - remainingPA;
+    taxableSalary = adjustedSalary - remainingPA;
     remainingPA = 0;
   } else {
-    remainingPA -= salary;
+    remainingPA -= adjustedSalary;
   }
   
   // Apply remaining PA to Savings
