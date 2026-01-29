@@ -460,9 +460,23 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
   }
   
   // Step 9: Total Deductions
+  let deductionParts = [];
+  deductionParts.push(`Income Tax: £${incomeTax.totalTax.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+  deductionParts.push(`National Insurance: £${result.nationalInsurance.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+  
+  if (result.voluntaryNICost > 0) {
+    deductionParts.push(`Voluntary Class 2 NI: £${result.voluntaryNICost.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+  }
+  
+  if (pensionContribution > 0 && incomeTax.pensionTaxRelief > 0) {
+    deductionParts.push(`Pension Tax Relief: -£${incomeTax.pensionTaxRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+  }
+  
+  const deductionCalc = deductionParts.join(' + ');
+  
   steps.push({
     title: 'Total Deductions',
-    description: 'Income Tax + National Insurance + Voluntary NI - Pension Tax Relief',
+    description: deductionCalc,
     value: `£${result.totalDeductions.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
   });
   
