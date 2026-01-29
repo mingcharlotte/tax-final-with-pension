@@ -270,14 +270,10 @@ export const getClass2Status = (profit) => {
 export const calculateTaxAndNI = (salary, savings, dividends, employmentType, payVoluntaryNI = false, pensionContribution = 0, pensionType = 'Net Pay') => {
   const incomeTax = calculateIncomeTax(salary, savings, dividends, pensionContribution, pensionType);
   
-  // For NI calculation, use adjusted salary for Net Pay pensions
-  let salaryForNI = salary;
-  if (pensionContribution > 0 && pensionType === 'Net Pay') {
-    salaryForNI = salary - pensionContribution;
-  }
-  
-  const nationalInsurance = calculateNationalInsurance(salaryForNI, employmentType);
-  const class2Status = employmentType === 'Self-Employed' ? getClass2Status(salaryForNI) : null;
+  // CRITICAL: National Insurance is ALWAYS calculated on FULL gross salary
+  // Net Pay pensions only save Income Tax, NOT National Insurance
+  const nationalInsurance = calculateNationalInsurance(salary, employmentType);
+  const class2Status = employmentType === 'Self-Employed' ? getClass2Status(salary) : null;
   
   let voluntaryNICost = 0;
   if (class2Status && class2Status.showToggle && payVoluntaryNI) {
