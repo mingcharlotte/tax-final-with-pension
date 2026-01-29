@@ -209,6 +209,10 @@ export const calculateIncomeTax = (salary, savings, dividends, pensionContributi
     psa,
     psaUsed,
     dividendAllowanceUsed: Math.min(taxableDividends, DIVIDEND_ALLOWANCE),
+    pensionTaxRelief,
+    adjustedSalary,
+    pensionContribution,
+    pensionType,
   };
 };
 
