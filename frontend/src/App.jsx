@@ -444,11 +444,21 @@ function App() {
                           {formatCurrency(taxData.nationalInsurance)}
                         </td>
                       </tr>
-                      {taxData.incomeTax.pensionTaxRelief > 0 && (
+                      {taxData.pensionContribution > 0 && (
+                        <tr className="border-b border-slate-100 hover:bg-slate-50">
+                          <td className="py-3 px-4 text-sm text-slate-700">Pension Contribution</td>
+                          <td className="py-3 px-4 text-sm text-slate-900 text-right font-medium" data-testid="pension-contribution">
+                            {formatCurrency(taxData.pensionContribution)}
+                          </td>
+                        </tr>
+                      )}
+                      {taxData.taxReliefAffectingTakeHome > 0 && (
                         <tr className="border-b border-slate-100 hover:bg-slate-50 bg-green-50">
-                          <td className="py-3 px-4 text-sm text-green-700 font-semibold">Pension Tax Relief</td>
+                          <td className="py-3 px-4 text-sm text-green-700 font-semibold">
+                            Higher/Additional Rate Tax Relief
+                          </td>
                           <td className="py-3 px-4 text-sm text-green-700 text-right font-semibold" data-testid="pension-tax-relief">
-                            -{formatCurrency(taxData.incomeTax.pensionTaxRelief)}
+                            -{formatCurrency(taxData.taxReliefAffectingTakeHome)}
                           </td>
                         </tr>
                       )}
