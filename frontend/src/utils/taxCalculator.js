@@ -472,10 +472,10 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
       const dividendsAtAdditional = Math.max(0, dividendsAfterAllowance - dividendsAtBasic - dividendsAtHigher);
       
       if (dividendsAtBasic > 0) {
-        dividendCalcParts.push(`£${dividendsAtBasic.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 10.75% = £${(dividendsAtBasic * 0.1075).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+        dividendCalcParts.push(`£${dividendsAtBasic.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 8.75% = £${(dividendsAtBasic * 0.0875).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
       }
       if (dividendsAtHigher > 0) {
-        dividendCalcParts.push(`£${dividendsAtHigher.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 35.75% = £${(dividendsAtHigher * 0.3575).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+        dividendCalcParts.push(`£${dividendsAtHigher.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 33.75% = £${(dividendsAtHigher * 0.3375).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
       }
       if (dividendsAtAdditional > 0) {
         dividendCalcParts.push(`£${dividendsAtAdditional.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 39.35% = £${(dividendsAtAdditional * 0.3935).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
