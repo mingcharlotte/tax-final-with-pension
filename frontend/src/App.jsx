@@ -444,6 +444,14 @@ function App() {
                           {formatCurrency(taxData.nationalInsurance)}
                         </td>
                       </tr>
+                      {taxData.incomeTax.pensionTaxRelief > 0 && (
+                        <tr className="border-b border-slate-100 hover:bg-slate-50 bg-green-50">
+                          <td className="py-3 px-4 text-sm text-green-700 font-semibold">Pension Tax Relief</td>
+                          <td className="py-3 px-4 text-sm text-green-700 text-right font-semibold" data-testid="pension-tax-relief">
+                            -{formatCurrency(taxData.incomeTax.pensionTaxRelief)}
+                          </td>
+                        </tr>
+                      )}
                       {taxData.voluntaryNICost > 0 && (
                         <tr className="border-b border-slate-100 hover:bg-slate-50">
                           <td className="py-3 px-4 text-sm text-slate-700">Voluntary Class 2 NI</td>
