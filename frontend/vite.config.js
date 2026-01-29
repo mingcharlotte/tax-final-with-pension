@@ -12,5 +12,13 @@ export default defineConfig({
   server: {
     port: 3000,
     host: '0.0.0.0',
+    hmr: {
+      clientPort: 443,
+    },
+    allowedHosts: [
+      'takehome-calc-1.preview.emergentagent.com',
+      '.preview.emergentagent.com',
+      'localhost',
+    ],
   },
 })
