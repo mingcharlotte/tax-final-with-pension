@@ -379,6 +379,17 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
     value: `£${result.nationalInsurance.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
   });
   
+  // Step 7b: Pension Tax Relief (if applicable)
+  if (pensionContribution > 0 && incomeTax.pensionTaxRelief > 0) {
+    steps.push({
+      title: 'Pension Tax Relief',
+      description: pensionType === 'Net Pay'
+        ? 'Tax saved by reducing taxable income through workplace pension'
+        : 'Tax relief on pension contributions (basic rate + higher/additional rate if applicable)',
+      value: `£${incomeTax.pensionTaxRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    });
+  }
+  
   // Step 8: Class 2 NI (if applicable)
   if (result.class2Status && result.voluntaryNICost > 0) {
     steps.push({
@@ -391,7 +402,7 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
   // Step 9: Total Deductions
   steps.push({
     title: 'Total Deductions',
-    description: 'Income Tax + National Insurance + Voluntary NI (if applicable)',
+    description: 'Income Tax + National Insurance + Voluntary NI - Pension Tax Relief',
     value: `£${result.totalDeductions.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
   });
   
