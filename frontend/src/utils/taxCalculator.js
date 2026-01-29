@@ -267,17 +267,24 @@ export const getClass2Status = (profit) => {
 };
 
 // Main calculation function
-export const calculateTaxAndNI = (salary, savings, dividends, employmentType, payVoluntaryNI = false) => {
-  const incomeTax = calculateIncomeTax(salary, savings, dividends);
-  const nationalInsurance = calculateNationalInsurance(salary, employmentType);
-  const class2Status = employmentType === 'Self-Employed' ? getClass2Status(salary) : null;
+export const calculateTaxAndNI = (salary, savings, dividends, employmentType, payVoluntaryNI = false, pensionContribution = 0, pensionType = 'Net Pay') => {
+  const incomeTax = calculateIncomeTax(salary, savings, dividends, pensionContribution, pensionType);
+  
+  // For NI calculation, use adjusted salary for Net Pay pensions
+  let salaryForNI = salary;
+  if (pensionContribution > 0 && pensionType === 'Net Pay') {
+    salaryForNI = salary - pensionContribution;
+  }
+  
+  const nationalInsurance = calculateNationalInsurance(salaryForNI, employmentType);
+  const class2Status = employmentType === 'Self-Employed' ? getClass2Status(salaryForNI) : null;
   
   let voluntaryNICost = 0;
   if (class2Status && class2Status.showToggle && payVoluntaryNI) {
     voluntaryNICost = class2Status.cost;
   }
   
-  const totalDeductions = incomeTax.totalTax + nationalInsurance + voluntaryNICost;
+  const totalDeductions = incomeTax.totalTax + nationalInsurance + voluntaryNICost - (incomeTax.pensionTaxRelief || 0);
   const totalIncome = salary + savings + dividends;
   const takeHome = totalIncome - totalDeductions;
   
