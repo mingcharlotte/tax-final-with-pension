@@ -284,9 +284,30 @@ export const calculateTaxAndNI = (salary, savings, dividends, employmentType, pa
     voluntaryNICost = class2Status.cost;
   }
   
-  const totalDeductions = incomeTax.totalTax + nationalInsurance + voluntaryNICost - (incomeTax.pensionTaxRelief || 0);
+  // Calculate pension tax relief that affects take-home
+  // For Net Pay: All tax relief affects take-home (already factored into lower tax/NI)
+  // For Relief at Source: Only higher/additional rate relief affects take-home (basic 20% goes to pension pot)
+  let taxReliefAffectingTakeHome = 0;
+  if (pensionContribution > 0 && pensionType === 'Relief at Source' && incomeTax.pensionTaxRelief > 0) {
+    // Basic relief (20%) goes to pension pot, not to take-home
+    const grossedUp = pensionContribution / 0.8;
+    const basicRelief = grossedUp * 0.20;
+    const higherAdditionalRelief = incomeTax.pensionTaxRelief - basicRelief;
+    taxReliefAffectingTakeHome = higherAdditionalRelief;
+  } else if (pensionContribution > 0 && pensionType === 'Net Pay') {
+    // For Net Pay, the tax relief is already factored into the lower tax/NI calculations
+    // So we don't subtract it again
+    taxReliefAffectingTakeHome = 0;
+  }
+  
+  // Total deductions = Tax + NI + Voluntary NI - Higher/Additional rate pension relief (if Relief at Source)
+  const totalDeductions = incomeTax.totalTax + nationalInsurance + voluntaryNICost - taxReliefAffectingTakeHome;
+  
   const totalIncome = salary + savings + dividends;
-  const takeHome = totalIncome - totalDeductions;
+  
+  // Take-home = Total Income - Total Deductions - Pension Contribution
+  // The pension contribution is money that goes to the pension, not to spending
+  const takeHome = totalIncome - totalDeductions - pensionContribution;
   
   return {
     totalIncome,
