@@ -528,11 +528,25 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
   
   // Step 7b: Pension Tax Relief (if applicable)
   if (pensionContribution > 0 && incomeTax.pensionTaxRelief > 0) {
+    let pensionDescription = '';
+    
+    if (pensionType === 'Net Pay') {
+      pensionDescription = `Rules: Net Pay Arrangement - pension deducted before tax, saving tax at your marginal rate. Calculation: Tax saved by reducing £${pensionContribution.toLocaleString()} from taxable income = £${incomeTax.pensionTaxRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    } else {
+      const grossedUp = pensionContribution / 0.8;
+      const basicRelief = grossedUp * 0.20;
+      const extraRelief = incomeTax.pensionTaxRelief - basicRelief;
+      
+      pensionDescription = `Rules: Relief at Source - 20% basic relief claimed automatically, higher/additional rate relief added. Calculation: Contribution £${pensionContribution.toLocaleString()} grossed up to £${grossedUp.toLocaleString('en-GB', { maximumFractionDigits: 2 })}. Basic relief (20%): £${basicRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      
+      if (extraRelief > 0) {
+        pensionDescription += ` + Extra relief: £${extraRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      }
+    }
+    
     steps.push({
       title: 'Pension Tax Relief',
-      description: pensionType === 'Net Pay'
-        ? 'Tax saved by reducing taxable income through workplace pension'
-        : 'Tax relief on pension contributions (basic rate + higher/additional rate if applicable)',
+      description: pensionDescription,
       value: `£${incomeTax.pensionTaxRelief.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
     });
   }
