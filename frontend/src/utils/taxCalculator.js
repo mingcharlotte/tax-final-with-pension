@@ -473,9 +473,11 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
   
   // Step 7: National Insurance
   const salaryForNI = (pensionContribution > 0 && pensionType === 'Net Pay') ? salary - pensionContribution : salary;
-  let niDescription = '';
+  let niRules = '';
+  let niCalculation = '';
   
   if (employmentType === 'Employee') {
+    niRules = 'Rules: Employee NI - 8% on earnings between £12,570-£50,270, then 2% above £50,270. ';
     if (salaryForNI > NI_LOWER_LIMIT) {
       const band1 = Math.min(salaryForNI - NI_LOWER_LIMIT, NI_UPPER_LIMIT - NI_LOWER_LIMIT);
       const band2 = Math.max(0, salaryForNI - NI_UPPER_LIMIT);
@@ -487,11 +489,12 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
       if (band2 > 0) {
         niParts.push(`£${band2.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 2% = £${(band2 * 0.02).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
       }
-      niDescription = niParts.join(' + ');
+      niCalculation = 'Calculation: ' + niParts.join(' + ');
     } else {
-      niDescription = `Salary £${salaryForNI.toLocaleString()} below £12,570 threshold`;
+      niCalculation = `Calculation: Salary £${salaryForNI.toLocaleString()} below £12,570 threshold`;
     }
   } else if (employmentType === 'Self-Employed') {
+    niRules = 'Rules: Class 4 NI - 6% on profits between £12,570-£50,270, then 2% above £50,270. ';
     if (salaryForNI > NI_LOWER_LIMIT) {
       const band1 = Math.min(salaryForNI - NI_LOWER_LIMIT, NI_UPPER_LIMIT - NI_LOWER_LIMIT);
       const band2 = Math.max(0, salaryForNI - NI_UPPER_LIMIT);
@@ -503,22 +506,23 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
       if (band2 > 0) {
         niParts.push(`£${band2.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 2% = £${(band2 * 0.02).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
       }
-      niDescription = niParts.join(' + ');
+      niCalculation = 'Calculation: ' + niParts.join(' + ');
     } else {
-      niDescription = `Profit £${salaryForNI.toLocaleString()} below £12,570 threshold`;
+      niCalculation = `Calculation: Profit £${salaryForNI.toLocaleString()} below £12,570 threshold`;
     }
   } else if (employmentType === 'Employer') {
+    niRules = 'Rules: Employer NI - 15% on all earnings above £5,000. ';
     if (salaryForNI > EMPLOYER_NI_THRESHOLD) {
       const taxableAmount = salaryForNI - EMPLOYER_NI_THRESHOLD;
-      niDescription = `£${taxableAmount.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 15% = £${(taxableAmount * 0.15).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      niCalculation = `Calculation: £${taxableAmount.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 15% = £${(taxableAmount * 0.15).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     } else {
-      niDescription = `Salary £${salaryForNI.toLocaleString()} below £5,000 threshold`;
+      niCalculation = `Calculation: Salary £${salaryForNI.toLocaleString()} below £5,000 threshold`;
     }
   }
   
   steps.push({
     title: `National Insurance (${employmentType})`,
-    description: niDescription,
+    description: niRules + niCalculation,
     value: `£${result.nationalInsurance.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
   });
   
