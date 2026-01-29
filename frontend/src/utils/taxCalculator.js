@@ -165,7 +165,8 @@ export const calculateIncomeTax = (salary, savings, dividends, pensionContributi
   // Calculate savings tax based on cumulative income
   if (savingsAfterAllowances > 0) {
     const cumulativeBeforeSavings = taxableSalary;
-    const basicRateRemaining = Math.max(0, (BASIC_RATE_LIMIT - PERSONAL_ALLOWANCE) - cumulativeBeforeSavings);
+    const adjustedBasicLimit = basicRateLimit - PERSONAL_ALLOWANCE;
+    const basicRateRemaining = Math.max(0, adjustedBasicLimit - cumulativeBeforeSavings);
     const higherRateRemaining = Math.max(0, (HIGHER_RATE_LIMIT - PERSONAL_ALLOWANCE) - cumulativeBeforeSavings - basicRateRemaining);
     
     const savingsAtBasic = Math.min(savingsAfterAllowances, basicRateRemaining);
