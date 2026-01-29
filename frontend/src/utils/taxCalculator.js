@@ -428,9 +428,45 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
   
   // Step 6: Dividend Tax
   if (dividends > 0) {
+    let dividendDescription = 'Rules: Dividend Allowance £500 at 0%, then taxed at 10.75% (Basic), 35.75% (Higher), 39.35% (Additional). ';
+    
+    const dividendAllowanceUsed = incomeTax.dividendAllowanceUsed;
+    const dividendsAfterAllowance = Math.max(0, incomeTax.taxableDividends - dividendAllowanceUsed);
+    
+    let dividendCalcParts = [];
+    if (dividendAllowanceUsed > 0) {
+      dividendCalcParts.push(`£${dividendAllowanceUsed.toLocaleString()} at 0% (Allowance)`);
+    }
+    
+    if (dividendsAfterAllowance > 0) {
+      const cumulativeBeforeDividends = incomeTax.taxableSalary + incomeTax.taxableSavings;
+      const adjustedBasicLimit = pensionType === 'Relief at Source' && pensionContribution > 0 
+        ? BASIC_RATE_LIMIT + (pensionContribution / 0.8) - PERSONAL_ALLOWANCE
+        : BASIC_RATE_LIMIT - PERSONAL_ALLOWANCE;
+      
+      const basicRateRemaining = Math.max(0, adjustedBasicLimit - cumulativeBeforeDividends);
+      const higherRateRemaining = Math.max(0, (HIGHER_RATE_LIMIT - PERSONAL_ALLOWANCE) - cumulativeBeforeDividends - basicRateRemaining);
+      
+      const dividendsAtBasic = Math.min(dividendsAfterAllowance, basicRateRemaining);
+      const dividendsAtHigher = Math.min(Math.max(0, dividendsAfterAllowance - dividendsAtBasic), higherRateRemaining);
+      const dividendsAtAdditional = Math.max(0, dividendsAfterAllowance - dividendsAtBasic - dividendsAtHigher);
+      
+      if (dividendsAtBasic > 0) {
+        dividendCalcParts.push(`£${dividendsAtBasic.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 10.75% = £${(dividendsAtBasic * 0.1075).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      }
+      if (dividendsAtHigher > 0) {
+        dividendCalcParts.push(`£${dividendsAtHigher.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 35.75% = £${(dividendsAtHigher * 0.3575).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      }
+      if (dividendsAtAdditional > 0) {
+        dividendCalcParts.push(`£${dividendsAtAdditional.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 39.35% = £${(dividendsAtAdditional * 0.3935).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      }
+    }
+    
+    dividendDescription += 'Calculation: ' + dividendCalcParts.join(' + ');
+    
     steps.push({
       title: 'Dividend Tax',
-      description: `Dividend Allowance: £${incomeTax.dividendAllowanceUsed.toLocaleString()} at 0% | Rates: 10.75% (Basic), 35.75% (Higher), 39.35% (Additional)`,
+      description: dividendDescription,
       value: `£${incomeTax.dividendTax.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
     });
   }
