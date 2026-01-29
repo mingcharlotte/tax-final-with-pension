@@ -318,6 +318,9 @@ export const calculateTaxAndNI = (salary, savings, dividends, employmentType, pa
     class2Status,
     voluntaryNICost,
     totalDeductions,
+    pensionContribution,
+    pensionType,
+    taxReliefAffectingTakeHome, // Only higher/additional rate relief for Relief at Source
   };
 };
 
