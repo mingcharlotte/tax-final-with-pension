@@ -182,7 +182,8 @@ export const calculateIncomeTax = (salary, savings, dividends, pensionContributi
   
   if (dividendsAfterAllowance > 0) {
     const cumulativeBeforeDividends = taxableSalary + taxableSavings;
-    const basicRateRemaining = Math.max(0, (BASIC_RATE_LIMIT - PERSONAL_ALLOWANCE) - cumulativeBeforeDividends);
+    const adjustedBasicLimit = basicRateLimit - PERSONAL_ALLOWANCE;
+    const basicRateRemaining = Math.max(0, adjustedBasicLimit - cumulativeBeforeDividends);
     const higherRateRemaining = Math.max(0, (HIGHER_RATE_LIMIT - PERSONAL_ALLOWANCE) - cumulativeBeforeDividends - basicRateRemaining);
     
     const dividendsAtBasic = Math.min(dividendsAfterAllowance, basicRateRemaining);
