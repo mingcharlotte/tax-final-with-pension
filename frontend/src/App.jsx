@@ -166,6 +166,73 @@ function App() {
               </div>
             </Card>
 
+            {/* Pension Contributions */}
+            <Card className="p-6 border-slate-200 rounded-xl" data-testid="pension-section">
+              <h2 className="text-xl font-bold font-['Manrope'] tracking-tight mb-6 text-slate-900">
+                Pension Contributions
+              </h2>
+              
+              <div className="space-y-5">
+                {/* Annual Contribution Amount */}
+                <div className="space-y-2">
+                  <Label htmlFor="pension" className="text-sm font-medium text-slate-700">
+                    Annual Contribution Amount (£)
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-medium">
+                      £
+                    </span>
+                    <Input
+                      id="pension"
+                      type="number"
+                      value={pensionContribution}
+                      onChange={(e) => setPensionContribution(e.target.value)}
+                      className="pl-7 h-12 border-slate-200 focus:border-slate-900 focus:ring-slate-900"
+                      data-testid="pension-input"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+
+                {/* Pension Type Selection */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-slate-700">
+                    Pension Type
+                  </Label>
+                  <div className="grid grid-cols-1 gap-2">
+                    <button
+                      onClick={() => setPensionType('Net Pay')}
+                      className={`px-4 py-3 text-sm font-medium rounded-lg border-2 transition-all text-left ${
+                        pensionType === 'Net Pay'
+                          ? 'bg-slate-900 text-white border-slate-900'
+                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                      }`}
+                      data-testid="pension-type-net-pay"
+                    >
+                      <div className="font-semibold">Net Pay Arrangement</div>
+                      <div className="text-xs mt-1 opacity-90">
+                        Typically workplace pensions
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setPensionType('Relief at Source')}
+                      className={`px-4 py-3 text-sm font-medium rounded-lg border-2 transition-all text-left ${
+                        pensionType === 'Relief at Source'
+                          ? 'bg-slate-900 text-white border-slate-900'
+                          : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                      }`}
+                      data-testid="pension-type-relief-at-source"
+                    >
+                      <div className="font-semibold">Relief at Source</div>
+                      <div className="text-xs mt-1 opacity-90">
+                        Typically private/SIPP pensions
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </Card>
+
             {/* Employment Type */}
             <Card className="p-6 border-slate-200 rounded-xl" data-testid="employment-type-section">
               <h3 className="text-lg font-bold font-['Manrope'] tracking-tight mb-4 text-slate-900">
