@@ -35,9 +35,25 @@ export const calculatePSA = (taxableNonSavingsIncome) => {
   return 0; // Additional rate taxpayer
 };
 
-// Calculate Income Tax
-export const calculateIncomeTax = (salary, savings, dividends) => {
-  const totalIncome = salary + savings + dividends;
+// Calculate Income Tax with Pension Contributions
+export const calculateIncomeTax = (salary, savings, dividends, pensionContribution = 0, pensionType = 'Net Pay') => {
+  let adjustedSalary = salary;
+  let basicRateLimit = BASIC_RATE_LIMIT;
+  let pensionTaxRelief = 0;
+  
+  // Handle pension contributions
+  if (pensionContribution > 0) {
+    if (pensionType === 'Net Pay') {
+      // Net Pay: Reduce salary before tax calculation
+      adjustedSalary = salary - pensionContribution;
+    } else if (pensionType === 'Relief at Source') {
+      // Relief at Source: Gross up and extend basic rate band
+      const grossedUpContribution = pensionContribution / 0.8;
+      basicRateLimit = BASIC_RATE_LIMIT + grossedUpContribution;
+    }
+  }
+  
+  const totalIncome = adjustedSalary + savings + dividends;
   const personalAllowance = calculatePersonalAllowance(totalIncome);
   
   // Beneficial Ordering: Apply PA to Salary first, then Savings, then Dividends
@@ -47,7 +63,7 @@ export const calculateIncomeTax = (salary, savings, dividends) => {
   let taxableDividends = 0;
   
   // Apply PA to Salary first
-  if (salary > remainingPA) {
+  if (adjustedSalary > remainingPA) {
     taxableSalary = salary - remainingPA;
     remainingPA = 0;
   } else {
