@@ -190,7 +190,7 @@ export const calculateIncomeTax = (salary, savings, dividends, pensionContributi
     const dividendsAtHigher = Math.min(Math.max(0, dividendsAfterAllowance - dividendsAtBasic), higherRateRemaining);
     const dividendsAtAdditional = Math.max(0, dividendsAfterAllowance - dividendsAtBasic - dividendsAtHigher);
     
-    dividendTax = (dividendsAtBasic * 0.1075) + (dividendsAtHigher * 0.3575) + (dividendsAtAdditional * 0.3935);
+    dividendTax = (dividendsAtBasic * 0.0875) + (dividendsAtHigher * 0.3375) + (dividendsAtAdditional * 0.3935);
   }
   
   const totalTax = salaryTax + savingsTax + dividendTax;
