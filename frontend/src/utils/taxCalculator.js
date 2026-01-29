@@ -343,9 +343,29 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
   
   // Step 4: Income Tax on Salary
   if (incomeTax.taxableSalary > 0) {
+    // Calculate the breakdown for display
+    const basicRateLimit = pensionType === 'Relief at Source' && pensionContribution > 0 
+      ? BASIC_RATE_LIMIT + (pensionContribution / 0.8) - PERSONAL_ALLOWANCE
+      : BASIC_RATE_LIMIT - PERSONAL_ALLOWANCE;
+    
+    const basicRateAmount = Math.min(incomeTax.taxableSalary, basicRateLimit);
+    const higherRateAmount = Math.min(Math.max(0, incomeTax.taxableSalary - basicRateLimit), HIGHER_RATE_LIMIT - BASIC_RATE_LIMIT);
+    const additionalRateAmount = Math.max(0, incomeTax.taxableSalary - (HIGHER_RATE_LIMIT - PERSONAL_ALLOWANCE));
+    
+    let calcParts = [];
+    if (basicRateAmount > 0) {
+      calcParts.push(`£${basicRateAmount.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 20% = £${(basicRateAmount * 0.20).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    }
+    if (higherRateAmount > 0) {
+      calcParts.push(`£${higherRateAmount.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 40% = £${(higherRateAmount * 0.40).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    }
+    if (additionalRateAmount > 0) {
+      calcParts.push(`£${additionalRateAmount.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 45% = £${(additionalRateAmount * 0.45).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+    }
+    
     steps.push({
       title: 'Income Tax on Salary',
-      description: 'Basic Rate (20% up to £50,270), Higher Rate (40% up to £125,140), Additional Rate (45% above)',
+      description: calcParts.length > 0 ? calcParts.join(' + ') : 'No tax on salary',
       value: `£${incomeTax.salaryTax.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
     });
   }
