@@ -448,7 +448,7 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
   
   // Step 6: Dividend Tax
   if (dividends > 0) {
-    let dividendDescription = 'Rules: Dividend Allowance £500 at 0%, then taxed at 10.75% (Basic), 35.75% (Higher), 39.35% (Additional). ';
+    let dividendDescription = 'Rules: Dividend Allowance £500 at 0%, then taxed at 8.75% (Basic), 33.75% (Higher), 39.35% (Additional) for 2025/26. ';
     
     const dividendAllowanceUsed = incomeTax.dividendAllowanceUsed;
     const dividendsAfterAllowance = Math.max(0, incomeTax.taxableDividends - dividendAllowanceUsed);
