@@ -352,6 +352,8 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
     const higherRateAmount = Math.min(Math.max(0, incomeTax.taxableSalary - basicRateLimit), HIGHER_RATE_LIMIT - BASIC_RATE_LIMIT);
     const additionalRateAmount = Math.max(0, incomeTax.taxableSalary - (HIGHER_RATE_LIMIT - PERSONAL_ALLOWANCE));
     
+    let description = 'Tax Rates: Basic 20% (up to £50,270), Higher 40% (£50,270-£125,140), Additional 45% (above £125,140). ';
+    
     let calcParts = [];
     if (basicRateAmount > 0) {
       calcParts.push(`£${basicRateAmount.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 20% = £${(basicRateAmount * 0.20).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
@@ -363,9 +365,11 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
       calcParts.push(`£${additionalRateAmount.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 45% = £${(additionalRateAmount * 0.45).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
     }
     
+    description += 'Calculation: ' + (calcParts.length > 0 ? calcParts.join(' + ') : 'No tax on salary');
+    
     steps.push({
       title: 'Income Tax on Salary',
-      description: calcParts.length > 0 ? calcParts.join(' + ') : 'No tax on salary',
+      description: description,
       value: `£${incomeTax.salaryTax.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
     });
   }
