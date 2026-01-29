@@ -301,8 +301,8 @@ export const calculateTaxAndNI = (salary, savings, dividends, employmentType, pa
 };
 
 // Generate detailed breakdown steps
-export const generateCalculationSteps = (salary, savings, dividends, employmentType, payVoluntaryNI) => {
-  const result = calculateTaxAndNI(salary, savings, dividends, employmentType, payVoluntaryNI);
+export const generateCalculationSteps = (salary, savings, dividends, employmentType, payVoluntaryNI, pensionContribution = 0, pensionType = 'Net Pay') => {
+  const result = calculateTaxAndNI(salary, savings, dividends, employmentType, payVoluntaryNI, pensionContribution, pensionType);
   const { incomeTax } = result;
   
   const steps = [];
@@ -313,6 +313,17 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
     description: `Salary (£${salary.toLocaleString()}) + Savings Interest (£${savings.toLocaleString()}) + Dividends (£${dividends.toLocaleString()})`,
     value: `£${result.totalIncome.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
   });
+  
+  // Step 1b: Pension Contribution (if applicable)
+  if (pensionContribution > 0) {
+    steps.push({
+      title: `Pension Contribution (${pensionType})`,
+      description: pensionType === 'Net Pay' 
+        ? `£${pensionContribution.toLocaleString()} deducted before tax calculation`
+        : `£${pensionContribution.toLocaleString()} (grossed up to £${(pensionContribution / 0.8).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`,
+      value: `£${pensionContribution.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    });
+  }
   
   // Step 2: Personal Allowance
   steps.push({
