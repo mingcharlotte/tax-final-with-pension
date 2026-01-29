@@ -376,9 +376,52 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
   
   // Step 5: Savings Tax
   if (savings > 0) {
+    let savingsDescription = `Rules: Starting Rate for Savings (£5,000 at 0%, reduces by salary over PA), PSA (£1,000 Basic rate, £500 Higher rate, £0 Additional rate). `;
+    
+    // Calculate actual breakdown
+    const taxableSavingsAfterPA = incomeTax.taxableSavings;
+    const startingRateUsed = incomeTax.startingRateUsed;
+    const psaUsed = incomeTax.psaUsed;
+    const savingsAfterAllowances = Math.max(0, taxableSavingsAfterPA - startingRateUsed - psaUsed);
+    
+    let savingsCalcParts = [];
+    if (startingRateUsed > 0) {
+      savingsCalcParts.push(`£${startingRateUsed.toLocaleString()} at 0% (Starting Rate)`);
+    }
+    if (psaUsed > 0) {
+      savingsCalcParts.push(`£${psaUsed.toLocaleString()} at 0% (PSA)`);
+    }
+    
+    if (savingsAfterAllowances > 0) {
+      // Calculate savings tax bands
+      const cumulativeBeforeSavings = incomeTax.taxableSalary;
+      const adjustedBasicLimit = pensionType === 'Relief at Source' && pensionContribution > 0 
+        ? BASIC_RATE_LIMIT + (pensionContribution / 0.8) - PERSONAL_ALLOWANCE
+        : BASIC_RATE_LIMIT - PERSONAL_ALLOWANCE;
+      
+      const basicRateRemaining = Math.max(0, adjustedBasicLimit - cumulativeBeforeSavings);
+      const higherRateRemaining = Math.max(0, (HIGHER_RATE_LIMIT - PERSONAL_ALLOWANCE) - cumulativeBeforeSavings - basicRateRemaining);
+      
+      const savingsAtBasic = Math.min(savingsAfterAllowances, basicRateRemaining);
+      const savingsAtHigher = Math.min(Math.max(0, savingsAfterAllowances - savingsAtBasic), higherRateRemaining);
+      const savingsAtAdditional = Math.max(0, savingsAfterAllowances - savingsAtBasic - savingsAtHigher);
+      
+      if (savingsAtBasic > 0) {
+        savingsCalcParts.push(`£${savingsAtBasic.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 20% = £${(savingsAtBasic * 0.20).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      }
+      if (savingsAtHigher > 0) {
+        savingsCalcParts.push(`£${savingsAtHigher.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 40% = £${(savingsAtHigher * 0.40).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      }
+      if (savingsAtAdditional > 0) {
+        savingsCalcParts.push(`£${savingsAtAdditional.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 45% = £${(savingsAtAdditional * 0.45).toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      }
+    }
+    
+    savingsDescription += 'Calculation: ' + savingsCalcParts.join(' + ');
+    
     steps.push({
       title: 'Savings Tax',
-      description: `Starting Rate for Savings: £${incomeTax.startingRateUsed.toLocaleString()} at 0% | PSA: £${incomeTax.psaUsed.toLocaleString()} at 0% | Remainder taxed at marginal rates`,
+      description: savingsDescription,
       value: `£${incomeTax.savingsTax.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
     });
   }
