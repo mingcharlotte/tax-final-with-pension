@@ -350,7 +350,7 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
     title: 'Personal Allowance',
     description: result.totalIncome > 100000 
       ? `£12,570 reduced by £1 for every £2 over £100,000. Total reduction: £${Math.floor((result.totalIncome - 100000) / 2).toLocaleString()}`
-      : 'Standard Personal Allowance for 2026/27',
+      : 'Standard Personal Allowance for 2025/26',
     value: `£${incomeTax.personalAllowance.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
   });
   
