@@ -396,13 +396,15 @@ export const calculateTaxAndNI = (salary, savings, dividends, employmentType, pa
     pensionContribution,
     pensionType,
     taxReliefAffectingTakeHome, // Only higher/additional rate relief for Relief at Source
+    cgt,
+    capitalGains,
   };
 };
 
 // Generate detailed breakdown steps
-export const generateCalculationSteps = (salary, savings, dividends, employmentType, payVoluntaryNI, pensionContribution = 0, pensionType = 'Net Pay') => {
-  const result = calculateTaxAndNI(salary, savings, dividends, employmentType, payVoluntaryNI, pensionContribution, pensionType);
-  const { incomeTax } = result;
+export const generateCalculationSteps = (salary, savings, dividends, employmentType, payVoluntaryNI, pensionContribution = 0, pensionType = 'Net Pay', capitalGains = 0) => {
+  const result = calculateTaxAndNI(salary, savings, dividends, employmentType, payVoluntaryNI, pensionContribution, pensionType, capitalGains);
+  const { incomeTax, cgt } = result;
   
   const steps = [];
   
