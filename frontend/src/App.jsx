@@ -50,10 +50,6 @@ function App() {
       pensionType,
       parseFloat(capitalGains) || 0
     );
-      payVoluntaryNI,
-      parseFloat(pensionContribution) || 0,
-      pensionType
-    );
     setCalculationSteps(steps);
   };
 
