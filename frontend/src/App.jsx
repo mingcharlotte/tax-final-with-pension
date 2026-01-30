@@ -240,6 +240,36 @@ function App() {
               </div>
             </Card>
 
+            {/* Capital Gains */}
+            <Card className="p-6 border-slate-200 rounded-xl" data-testid="capital-gains-section">
+              <h2 className="text-xl font-bold font-['Manrope'] tracking-tight mb-6 text-slate-900">
+                Capital Gains
+              </h2>
+              
+              <div className="space-y-2">
+                <Label htmlFor="capitalGains" className="text-sm font-medium text-slate-700">
+                  Total Capital Gains in Year (£)
+                </Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-medium">
+                    £
+                  </span>
+                  <Input
+                    id="capitalGains"
+                    type="number"
+                    value={capitalGains}
+                    onChange={(e) => setCapitalGains(e.target.value)}
+                    className="pl-7 h-12 border-slate-200 focus:border-slate-900 focus:ring-slate-900"
+                    data-testid="capital-gains-input"
+                    placeholder="0"
+                  />
+                </div>
+                <p className="text-xs text-slate-500 mt-2">
+                  First £3,000 is tax-free. Rates: 18% (Basic), 24% (Higher)
+                </p>
+              </div>
+            </Card>
+
             {/* Employment Type */}
             <Card className="p-6 border-slate-200 rounded-xl" data-testid="employment-type-section">
               <h3 className="text-lg font-bold font-['Manrope'] tracking-tight mb-4 text-slate-900">
