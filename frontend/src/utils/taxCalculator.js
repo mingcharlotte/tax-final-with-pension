@@ -269,8 +269,78 @@ export const getClass2Status = (profit) => {
   }
 };
 
+// Calculate Capital Gains Tax
+export const calculateCapitalGainsTax = (capitalGains, taxableIncome, pensionContribution = 0, pensionType = 'Net Pay') => {
+  if (capitalGains <= 0) {
+    return {
+      totalCGT: 0,
+      taxableGain: 0,
+      exemptAmount: 0,
+      gainsAtBasicRate: 0,
+      gainsAtHigherRate: 0,
+      cgtAtBasicRate: 0,
+      cgtAtHigherRate: 0,
+      remainingBasicRateBand: 0,
+    };
+  }
+  
+  // Apply annual exempt amount
+  const exemptAmount = Math.min(capitalGains, CGT_ANNUAL_EXEMPT_AMOUNT);
+  const taxableGain = Math.max(0, capitalGains - exemptAmount);
+  
+  if (taxableGain === 0) {
+    return {
+      totalCGT: 0,
+      taxableGain: 0,
+      exemptAmount,
+      gainsAtBasicRate: 0,
+      gainsAtHigherRate: 0,
+      cgtAtBasicRate: 0,
+      cgtAtHigherRate: 0,
+      remainingBasicRateBand: 0,
+    };
+  }
+  
+  // Calculate the basic rate band limit (expand if Relief at Source pension)
+  let basicRateBandLimit = BASIC_RATE_LIMIT - PERSONAL_ALLOWANCE;
+  if (pensionType === 'Relief at Source' && pensionContribution > 0) {
+    const grossedUp = pensionContribution / 0.8;
+    basicRateBandLimit += grossedUp;
+  }
+  
+  // Calculate remaining basic rate band space
+  const remainingBasicRateBand = Math.max(0, basicRateBandLimit - taxableIncome);
+  
+  // Allocate gains to tax bands
+  let gainsAtBasicRate = 0;
+  let gainsAtHigherRate = 0;
+  
+  if (remainingBasicRateBand > 0) {
+    gainsAtBasicRate = Math.min(taxableGain, remainingBasicRateBand);
+    gainsAtHigherRate = Math.max(0, taxableGain - gainsAtBasicRate);
+  } else {
+    gainsAtHigherRate = taxableGain;
+  }
+  
+  // Calculate CGT
+  const cgtAtBasicRate = gainsAtBasicRate * CGT_BASIC_RATE;
+  const cgtAtHigherRate = gainsAtHigherRate * CGT_HIGHER_RATE;
+  const totalCGT = cgtAtBasicRate + cgtAtHigherRate;
+  
+  return {
+    totalCGT,
+    taxableGain,
+    exemptAmount,
+    gainsAtBasicRate,
+    gainsAtHigherRate,
+    cgtAtBasicRate,
+    cgtAtHigherRate,
+    remainingBasicRateBand,
+  };
+};
+
 // Main calculation function
-export const calculateTaxAndNI = (salary, savings, dividends, employmentType, payVoluntaryNI = false, pensionContribution = 0, pensionType = 'Net Pay') => {
+export const calculateTaxAndNI = (salary, savings, dividends, employmentType, payVoluntaryNI = false, pensionContribution = 0, pensionType = 'Net Pay', capitalGains = 0) => {
   const incomeTax = calculateIncomeTax(salary, savings, dividends, pensionContribution, pensionType);
   
   // CRITICAL: National Insurance is ALWAYS calculated on FULL gross salary
