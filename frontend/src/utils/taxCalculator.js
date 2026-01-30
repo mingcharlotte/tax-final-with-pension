@@ -655,6 +655,33 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
     });
   }
   
+  // Step 7c: Capital Gains Tax (if applicable)
+  if (capitalGains > 0) {
+    let cgtDescription = `Rules: Annual Exempt Amount £3,000 (tax-free). Rates: 18% (Basic Rate), 24% (Higher Rate). `;
+    
+    if (cgt.taxableGain > 0) {
+      cgtDescription += `Calculation: Total gains £${capitalGains.toLocaleString()} - Exempt amount £${cgt.exemptAmount.toLocaleString()} = £${cgt.taxableGain.toLocaleString('en-GB', { maximumFractionDigits: 2 })} taxable. `;
+      cgtDescription += `Remaining Basic Rate band space: £${cgt.remainingBasicRateBand.toLocaleString('en-GB', { maximumFractionDigits: 2 })}. `;
+      
+      let cgtCalcParts = [];
+      if (cgt.gainsAtBasicRate > 0) {
+        cgtCalcParts.push(`£${cgt.gainsAtBasicRate.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 18% = £${cgt.cgtAtBasicRate.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      }
+      if (cgt.gainsAtHigherRate > 0) {
+        cgtCalcParts.push(`£${cgt.gainsAtHigherRate.toLocaleString('en-GB', { maximumFractionDigits: 0 })} × 24% = £${cgt.cgtAtHigherRate.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+      }
+      cgtDescription += cgtCalcParts.join(' + ');
+    } else {
+      cgtDescription += `Calculation: Total gains £${capitalGains.toLocaleString()} within £3,000 exempt amount. No CGT payable.`;
+    }
+    
+    steps.push({
+      title: 'Capital Gains Tax',
+      description: cgtDescription,
+      value: `£${cgt.totalCGT.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    });
+  }
+  
   // Step 8: Class 2 NI (if applicable)
   if (result.class2Status && result.voluntaryNICost > 0) {
     steps.push({
