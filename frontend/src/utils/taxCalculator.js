@@ -369,14 +369,20 @@ export const calculateTaxAndNI = (salary, savings, dividends, employmentType, pa
     taxReliefAffectingTakeHome = 0;
   }
   
-  // Total deductions = Tax + NI + Voluntary NI - Higher/Additional rate pension relief (if Relief at Source)
-  const totalDeductions = incomeTax.totalTax + nationalInsurance + voluntaryNICost - taxReliefAffectingTakeHome;
+  // Calculate Capital Gains Tax
+  // Taxable income = total taxable amounts (not including PA)
+  const taxableIncomeForCGT = incomeTax.taxableSalary + incomeTax.taxableSavings + incomeTax.taxableDividends;
+  const cgt = calculateCapitalGainsTax(capitalGains, taxableIncomeForCGT, pensionContribution, pensionType);
   
+  // Total deductions = Tax + NI + Pension + CGT + Voluntary NI - Higher/Additional rate pension relief (if Relief at Source)
+  const totalDeductions = incomeTax.totalTax + nationalInsurance + pensionContribution + cgt.totalCGT + voluntaryNICost - taxReliefAffectingTakeHome;
+  
+  // NOTE: Capital gains are NOT added to "Total Income" - they're a separate asset disposal
   const totalIncome = salary + savings + dividends;
   
-  // Take-home = Total Income - Total Deductions - Pension Contribution
-  // The pension contribution is money that goes to the pension, not to spending
-  const takeHome = totalIncome - totalDeductions - pensionContribution;
+  // Take-home = Total Income - Total Deductions
+  // Pension contribution already included in totalDeductions, so don't subtract again
+  const takeHome = totalIncome - totalDeductions;
   
   return {
     totalIncome,
