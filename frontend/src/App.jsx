@@ -499,6 +499,14 @@ function App() {
                           </td>
                         </tr>
                       )}
+                      {taxData.cgt && taxData.cgt.totalCGT > 0 && (
+                        <tr className="border-b border-slate-100 hover:bg-slate-50">
+                          <td className="py-3 px-4 text-sm text-slate-700">Capital Gains Tax</td>
+                          <td className="py-3 px-4 text-sm text-slate-900 text-right font-medium" data-testid="capital-gains-tax">
+                            {formatCurrency(taxData.cgt.totalCGT)}
+                          </td>
+                        </tr>
+                      )}
                       {taxData.voluntaryNICost > 0 && (
                         <tr className="border-b border-slate-100 hover:bg-slate-50">
                           <td className="py-3 px-4 text-sm text-slate-700">Voluntary Class 2 NI</td>
