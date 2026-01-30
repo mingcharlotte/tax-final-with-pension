@@ -11,6 +11,9 @@ const CLASS_2_SMALL_PROFIT_THRESHOLD = 6725; // Updated for 2025/26
 const NI_LOWER_LIMIT = 12570;
 const NI_UPPER_LIMIT = 50270;
 const EMPLOYER_NI_THRESHOLD = 5000;
+const CGT_ANNUAL_EXEMPT_AMOUNT = 3000; // Capital Gains Tax exempt amount
+const CGT_BASIC_RATE = 0.18; // 18% for basic rate taxpayers
+const CGT_HIGHER_RATE = 0.24; // 24% for higher/additional rate taxpayers
 
 // Calculate Personal Allowance (reduces when income > £100k)
 export const calculatePersonalAllowance = (totalIncome) => {
