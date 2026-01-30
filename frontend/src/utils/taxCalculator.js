@@ -700,6 +700,10 @@ export const generateCalculationSteps = (salary, savings, dividends, employmentT
     deductionParts.push(`Pension Contribution: £${pensionContribution.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
   }
   
+  if (cgt.totalCGT > 0) {
+    deductionParts.push(`Capital Gains Tax: £${cgt.totalCGT.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
+  }
+  
   if (result.voluntaryNICost > 0) {
     deductionParts.push(`Voluntary Class 2 NI: £${result.voluntaryNICost.toLocaleString('en-GB', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`);
   }
