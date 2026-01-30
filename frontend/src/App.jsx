@@ -17,6 +17,7 @@ function App() {
   const [dividends, setDividends] = useState(1000);
   const [pensionContribution, setPensionContribution] = useState(0);
   const [pensionType, setPensionType] = useState('Net Pay');
+  const [capitalGains, setCapitalGains] = useState(0);
   const [employmentType, setEmploymentType] = useState('Employee');
   const [payVoluntaryNI, setPayVoluntaryNI] = useState(false);
   const [taxData, setTaxData] = useState(null);
@@ -24,7 +25,7 @@ function App() {
 
   useEffect(() => {
     calculateResults();
-  }, [salary, savings, dividends, pensionContribution, pensionType, employmentType, payVoluntaryNI]);
+  }, [salary, savings, dividends, pensionContribution, pensionType, capitalGains, employmentType, payVoluntaryNI]);
 
   const calculateResults = () => {
     const result = calculateTaxAndNI(
@@ -34,7 +35,8 @@ function App() {
       employmentType,
       payVoluntaryNI,
       parseFloat(pensionContribution) || 0,
-      pensionType
+      pensionType,
+      parseFloat(capitalGains) || 0
     );
     setTaxData(result);
     
@@ -43,6 +45,11 @@ function App() {
       parseFloat(savings) || 0,
       parseFloat(dividends) || 0,
       employmentType,
+      payVoluntaryNI,
+      parseFloat(pensionContribution) || 0,
+      pensionType,
+      parseFloat(capitalGains) || 0
+    );
       payVoluntaryNI,
       parseFloat(pensionContribution) || 0,
       pensionType
