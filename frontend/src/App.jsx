@@ -89,7 +89,7 @@ function App() {
               <h1 className="text-2xl md:text-3xl font-bold font-['Manrope'] tracking-tight">
                 UK Tax Calculator
               </h1>
-              <p className="text-sm text-slate-300 mt-1">2025/26 Tax Year</p>
+              <p className="text-sm text-slate-300 mt-1">2025/26 Tax Year by CSM</p>
             </div>
           </div>
         </div>
