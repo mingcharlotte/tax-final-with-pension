@@ -110,7 +110,7 @@ function App() {
                 {/* Annual Salary */}
                 <div className="space-y-2">
                   <Label htmlFor="salary" className="text-sm font-medium text-slate-700">
-                    Annual Salary
+                    Annual Salary (for self-employed = payfrom all employments + profit from self-employment)
                   </Label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 font-medium">
